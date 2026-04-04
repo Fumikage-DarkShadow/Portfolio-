@@ -1,0 +1,1682 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FLOWW — Preview</title>
+<style>
+  /* ── Reset & Base ───────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0D0D0D;
+    --bg-card: #141414;
+    --bg-elevated: #1A1A1A;
+    --bg-glass: rgba(255,255,255,0.04);
+    --bg-glass-border: rgba(255,255,255,0.08);
+    --neon: #00FF88;
+    --neon-dim: rgba(0,255,136,0.12);
+    --neon-border: rgba(0,255,136,0.3);
+    --violet: #7C3AED;
+    --violet-dim: rgba(124,58,237,0.15);
+    --violet-border: rgba(124,58,237,0.3);
+    --violet-light: #9D5FF0;
+    --warning: #F59E0B;
+    --warning-dim: rgba(245,158,11,0.15);
+    --danger: #EF4444;
+    --danger-dim: rgba(239,68,68,0.12);
+    --danger-border: rgba(239,68,68,0.3);
+    --text: #FFFFFF;
+    --text-sec: rgba(255,255,255,0.6);
+    --text-muted: rgba(255,255,255,0.35);
+    --border: rgba(255,255,255,0.08);
+    --needs: #3B82F6;
+    --savings: #00FF88;
+    --pleasure: #A855F7;
+    --subs: #F59E0B;
+  }
+
+  html, body {
+    background: #060606;
+    min-height: 100vh;
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ── Layout ─────────────────────────────────────────────── */
+  .app-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px 60px;
+    gap: 32px;
+  }
+
+  .hero-title {
+    font-size: 48px;
+    font-weight: 900;
+    letter-spacing: 8px;
+    color: var(--neon);
+    text-shadow: 0 0 40px rgba(0,255,136,0.4);
+    margin-bottom: 4px;
+  }
+  .hero-sub {
+    color: var(--text-muted);
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* ── Phone frame ─────────────────────────────────────────── */
+  .phone-row {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .phone-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .phone-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .phone {
+    width: 320px;
+    height: 680px;
+    background: var(--bg);
+    border-radius: 44px;
+    border: 2px solid rgba(255,255,255,0.12);
+    overflow: hidden;
+    position: relative;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.04),
+      0 40px 80px rgba(0,0,0,0.8),
+      0 0 60px rgba(0,255,136,0.05);
+  }
+
+  /* Notch */
+  .phone::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 28px;
+    background: #000;
+    border-radius: 20px;
+    z-index: 100;
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .screen::-webkit-scrollbar { display: none; }
+
+  .screen-inner {
+    padding: 60px 18px 100px;
+  }
+
+  /* ── Tab bar ─────────────────────────────────────────────── */
+  .tab-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 82px;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 16px;
+    z-index: 50;
+  }
+
+  .tab-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    padding-top: 8px;
+  }
+
+  .tab-item span:first-child { font-size: 20px; }
+  .tab-item span:last-child  { font-size: 9px; font-weight: 600; color: var(--text-muted); }
+  .tab-item.active span:last-child { color: var(--neon); }
+
+  .tab-add {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: -20px;
+    cursor: pointer;
+  }
+
+  .tab-add-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    background: var(--neon);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #000;
+    font-weight: 900;
+    border: 3px solid var(--bg);
+    box-shadow: 0 4px 20px rgba(0,255,136,0.5);
+    line-height: 1;
+    padding-bottom: 2px;
+  }
+
+  /* ── Shared Components ───────────────────────────────────── */
+  .glass-card {
+    background: var(--bg-glass);
+    border: 1px solid var(--bg-glass-border);
+    border-radius: 18px;
+    padding: 16px;
+    backdrop-filter: blur(10px);
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  .section-action {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--neon);
+    cursor: pointer;
+  }
+
+  .row { display: flex; align-items: center; }
+  .col { display: flex; flex-direction: column; }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .badge-green { background: var(--neon-dim); color: var(--neon); }
+  .badge-yellow { background: var(--warning-dim); color: var(--warning); }
+  .badge-red { background: var(--danger-dim); color: var(--danger); }
+  .badge-dot { width: 6px; height: 6px; border-radius: 3px; }
+
+  .progress-track {
+    width: 100%;
+    height: 9px;
+    background: var(--bg-elevated);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: var(--neon);
+    transition: width 1s ease;
+  }
+
+  .btn-primary {
+    background: var(--neon);
+    color: #000;
+    font-weight: 800;
+    font-size: 14px;
+    border: none;
+    border-radius: 13px;
+    height: 48px;
+    width: 100%;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text);
+    font-weight: 700;
+    font-size: 13px;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    height: 44px;
+    cursor: pointer;
+    width: 100%;
+  }
+
+  /* ── SCREEN 1: Dashboard ─────────────────────────────────── */
+  .greeting { font-size: 20px; font-weight: 800; color: var(--text); }
+  .greeting-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  .avatar {
+    width: 38px; height: 38px; border-radius: 19px;
+    background: var(--neon-dim);
+    border: 1.5px solid var(--neon-border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 900; color: var(--neon);
+  }
+
+  .balance-hero {
+    border-radius: 22px;
+    padding: 22px;
+    margin: 14px 0;
+    background: linear-gradient(135deg, rgba(0,255,136,0.07) 0%, rgba(124,58,237,0.04) 100%);
+    border: 1px solid var(--bg-glass-border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .balance-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -30px; right: -30px;
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba(0,255,136,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .balance-label { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; }
+  .balance-amount {
+    font-size: 44px; font-weight: 900; color: var(--text);
+    letter-spacing: -2px; line-height: 1; margin-bottom: 18px;
+  }
+
+  .progress-labels { display: flex; justify-content: space-between; margin-bottom: 6px; }
+  .progress-labels span { font-size: 10px; color: var(--text-sec); }
+
+  .flow-score-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+  }
+
+  .flow-score-title { font-size: 14px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+  .flow-score-advice { font-size: 11px; color: var(--text-sec); line-height: 16px; max-width: 160px; }
+
+  .score-ring {
+    position: relative;
+    width: 80px; height: 80px;
+    flex-shrink: 0;
+  }
+
+  .score-ring svg { transform: rotate(-90deg); }
+
+  .score-center {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  .score-num { font-size: 22px; font-weight: 900; color: var(--neon); line-height: 1; }
+  .score-lbl { font-size: 8px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .alloc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .alloc-card {
+    background: var(--bg-glass);
+    border: 1px solid var(--bg-glass-border);
+    border-radius: 16px;
+    padding: 14px;
+  }
+
+  .alloc-emoji { font-size: 20px; margin-bottom: 6px; display: block; }
+  .alloc-label { font-size: 9px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 3px; }
+  .alloc-amount { font-size: 19px; font-weight: 800; line-height: 1.1; }
+  .alloc-sub { font-size: 9px; color: var(--text-muted); margin-top: 2px; }
+
+  .upcoming-row { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0; }
+  .upcoming-row::-webkit-scrollbar { display: none; }
+
+  .upcoming-chip {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px; padding: 9px 11px;
+    white-space: nowrap; flex-shrink: 0;
+  }
+
+  .upcoming-dot { width: 7px; height: 7px; border-radius: 50%; }
+  .upcoming-name { font-size: 11px; font-weight: 600; color: var(--text); }
+  .upcoming-amount { font-size: 11px; font-weight: 700; color: var(--text-sec); }
+  .upcoming-days {
+    font-size: 9px; font-weight: 700; color: var(--warning);
+    background: var(--warning-dim); padding: 2px 5px; border-radius: 5px;
+  }
+
+  .expense-list { overflow: hidden; }
+
+  .expense-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .expense-row:last-child { border-bottom: none; }
+
+  .expense-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+
+  .expense-cat { font-size: 13px; font-weight: 600; color: var(--text); }
+  .expense-note { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+  .expense-amount { font-size: 13px; font-weight: 800; color: var(--danger); margin-left: auto; }
+
+  /* ── SCREEN 2: Add Expense ───────────────────────────────── */
+  .amount-display {
+    display: flex; align-items: flex-end; gap: 4px;
+    justify-content: center; padding: 10px 0 20px;
+  }
+
+  .amount-currency { font-size: 28px; color: var(--text-muted); font-weight: 700; padding-bottom: 5px; }
+  .amount-value { font-size: 58px; font-weight: 900; color: var(--text); letter-spacing: -3px; line-height: 1; }
+
+  .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+
+  .key {
+    height: 56px; background: var(--bg-elevated); border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 600; color: var(--text); cursor: pointer;
+    border: none; transition: opacity .15s;
+  }
+
+  .key:active { opacity: 0.6; }
+
+  .cat-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+
+  .cat-card {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 10px 4px; background: var(--bg-card); border-radius: 12px;
+    border: 1.5px solid var(--border); cursor: pointer;
+  }
+
+  .cat-card.selected { border-color: var(--neon); background: var(--neon-dim); }
+  .cat-card span:first-child { font-size: 20px; }
+  .cat-card span:last-child { font-size: 8px; font-weight: 700; color: var(--text-muted); text-align: center; }
+
+  .tag-row { display: flex; gap: 8px; }
+
+  .tag-chip {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    gap: 5px; padding: 11px 6px; background: var(--bg-card);
+    border-radius: 12px; border: 1.5px solid var(--border); cursor: pointer;
+    font-size: 11px; font-weight: 700; color: var(--text-sec);
+  }
+
+  .tag-chip.selected-need { border-color: #3B82F6; background: rgba(59,130,246,.12); color: #3B82F6; }
+  .tag-chip.selected-want { border-color: var(--violet-light); background: var(--violet-dim); color: var(--violet-light); }
+  .tag-chip.selected-inv  { border-color: var(--neon); background: var(--neon-dim); color: var(--neon); }
+
+  /* ── SCREEN 3: Subscriptions ─────────────────────────────── */
+  .subs-summary {
+    display: flex; margin-bottom: 16px;
+  }
+
+  .subs-stat {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 12px;
+  }
+
+  .subs-stat-val { font-size: 18px; font-weight: 800; color: var(--text); }
+  .subs-stat-lbl { font-size: 9px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; }
+  .subs-divider { width: 1px; background: var(--border); }
+
+  .sub-card {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--bg-card); border-radius: 14px;
+    padding: 12px 14px; margin-bottom: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .sub-icon-bg {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+
+  .sub-name { font-size: 14px; font-weight: 700; color: var(--text); }
+  .sub-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .sub-amount { font-size: 15px; font-weight: 800; }
+  .sub-right { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+
+  .alert-box {
+    background: var(--danger-dim);
+    border: 1px solid var(--danger-border);
+    border-radius: 12px; padding: 12px; margin-bottom: 10px;
+  }
+
+  .alert-title { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .alert-text { font-size: 11px; color: var(--text-sec); line-height: 16px; }
+
+  .alert-box.warning {
+    background: var(--warning-dim);
+    border-color: rgba(245,158,11,.3);
+  }
+
+  /* ── SCREEN 4: Stats ─────────────────────────────────────── */
+  .tabs-row {
+    display: flex; background: var(--bg-card); border-radius: 12px;
+    padding: 3px; margin-bottom: 16px; gap: 4px;
+  }
+
+  .tab-btn {
+    flex: 1; padding: 9px; border-radius: 9px;
+    font-size: 12px; font-weight: 600; color: var(--text-muted);
+    background: transparent; border: none; cursor: pointer;
+  }
+
+  .tab-btn.active { background: var(--bg-elevated); color: var(--text); }
+
+  .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+
+  .kpi-card {
+    background: var(--bg-glass); border: 1px solid var(--bg-glass-border);
+    border-radius: 14px; padding: 12px;
+  }
+
+  .kpi-label { font-size: 9px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+  .kpi-value { font-size: 18px; font-weight: 800; }
+
+  /* Donut */
+  .donut-wrap { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+  .donut-legend { display: flex; flex-direction: column; gap: 7px; }
+
+  .legend-item { display: flex; align-items: center; gap: 7px; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .legend-lbl { font-size: 10px; color: var(--text-sec); }
+  .legend-pct { font-size: 10px; font-weight: 700; color: var(--text); margin-left: auto; min-width: 30px; text-align: right; }
+
+  .top-row {
+    display: flex; align-items: center; gap: 10px; padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .top-row:last-child { border-bottom: none; }
+
+  .top-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .top-lbl { font-size: 13px; font-weight: 600; color: var(--text); }
+  .top-meta { font-size: 10px; color: var(--text-muted); }
+  .top-right { margin-left: auto; text-align: right; }
+  .top-amount { font-size: 14px; font-weight: 800; color: var(--text); }
+  .top-pct { font-size: 10px; color: var(--text-muted); }
+
+  .advice-card {
+    background: var(--neon-dim); border: 1px solid var(--neon-border);
+    border-radius: 12px; padding: 12px; margin-bottom: 8px;
+  }
+
+  .advice-text { font-size: 11px; color: var(--text-sec); line-height: 17px; }
+
+  /* Bar chart */
+  .bar-chart { display: flex; align-items: flex-end; gap: 5px; height: 80px; padding: 0 4px; }
+  .bar-wrap { display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; }
+  .bar { width: 100%; border-radius: 5px 5px 0 0; min-width: 18px; }
+  .bar-lbl { font-size: 14px; line-height: 1; }
+
+  /* ── SCREEN 5: Onboarding ────────────────────────────────── */
+  .ob-logo { font-size: 22px; font-weight: 900; color: var(--neon); letter-spacing: 4px; margin-bottom: 14px; }
+  .ob-step { font-size: 10px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
+  .ob-title { font-size: 24px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; margin-bottom: 6px; }
+  .ob-sub { font-size: 13px; color: var(--text-sec); line-height: 19px; margin-bottom: 22px; }
+
+  .ob-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+
+  .ob-card {
+    background: var(--bg-card); border-radius: 14px; padding: 14px;
+    border: 1.5px solid var(--border); cursor: pointer;
+  }
+
+  .ob-card.selected { border-color: var(--neon); background: var(--neon-dim); }
+  .ob-card-emoji { font-size: 24px; margin-bottom: 6px; display: block; }
+  .ob-card-label { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .ob-card-desc { font-size: 10px; color: var(--text-muted); line-height: 15px; }
+  .ob-card.selected .ob-card-label { color: var(--neon); }
+
+  .progress-steps {
+    display: flex; gap: 6px; margin-bottom: 20px;
+  }
+
+  .step-dot {
+    height: 4px; border-radius: 2px; background: var(--border); flex: 1;
+    transition: background .3s;
+  }
+
+  .step-dot.done { background: var(--neon); }
+
+  .field-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 0; border-bottom: 1px solid var(--border);
+  }
+
+  .field-emoji { font-size: 20px; margin-top: 2px; }
+
+  .field-label { font-size: 12px; font-weight: 600; color: var(--text-sec); margin-bottom: 6px; }
+
+  .field-input {
+    display: flex; align-items: center; background: var(--bg-elevated);
+    border-radius: 10px; padding: 0 12px; height: 42px; gap: 6px;
+  }
+
+  .field-input-val { font-size: 16px; font-weight: 700; color: var(--text); flex: 1; }
+  .field-input-suffix { font-size: 12px; color: var(--text-muted); }
+
+  /* ── Profile ─────────────────────────────────────────────── */
+  .profile-avatar-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 22px; }
+
+  .profile-avatar {
+    width: 72px; height: 72px; border-radius: 36px;
+    background: var(--neon-dim); border: 2px solid var(--neon-border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; font-weight: 900; color: var(--neon); margin-bottom: 10px;
+  }
+
+  .profile-name { font-size: 22px; font-weight: 800; color: var(--text); }
+  .profile-situation { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
+
+  .info-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+  }
+
+  .info-row:last-child { border-bottom: none; }
+  .info-lbl { font-size: 13px; color: var(--text-sec); }
+  .info-val { font-size: 13px; font-weight: 600; color: var(--text); }
+
+  .action-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 13px 0; border-bottom: 1px solid var(--border); cursor: pointer;
+  }
+
+  .action-row:last-child { border-bottom: none; }
+  .action-emoji { font-size: 18px; }
+  .action-label { flex: 1; font-size: 13px; font-weight: 600; color: var(--text); }
+  .action-chevron { font-size: 18px; color: var(--text-muted); }
+
+  /* ── Navigation indicators ───────────────────────────────── */
+  .screen-nav {
+    display: flex; gap: 6px; justify-content: center;
+  }
+
+  .nav-dot {
+    width: 6px; height: 6px; border-radius: 3px;
+    background: rgba(255,255,255,0.2);
+    cursor: pointer; transition: all .2s;
+  }
+
+  .nav-dot.active { background: var(--neon); width: 18px; }
+
+  /* ── Interactive nav ─────────────────────────────────────── */
+  .screen-page { display: none; }
+  .screen-page.active { display: block; }
+
+  /* ── Floating legend ──────────────────────────────────────── */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    max-width: 1100px;
+    width: 100%;
+  }
+
+  .feature-card {
+    background: var(--bg-card);
+    border: 1px solid var(--bg-glass-border);
+    border-radius: 18px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .feature-emoji { font-size: 28px; }
+  .feature-title { font-size: 14px; font-weight: 800; color: var(--text); }
+  .feature-desc { font-size: 12px; color: var(--text-sec); line-height: 18px; }
+
+  /* ── Animations ──────────────────────────────────────────── */
+  @keyframes glow-pulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(0,255,136,.15); }
+    50%       { box-shadow: 0 0 40px rgba(0,255,136,.35); }
+  }
+
+  .phone { animation: glow-pulse 4s ease-in-out infinite; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-8px); }
+  }
+
+  /* SVG bar chart animation */
+  @keyframes barGrow {
+    from { transform: scaleY(0); transform-origin: bottom; }
+    to   { transform: scaleY(1); transform-origin: bottom; }
+  }
+
+  /* ── Responsive ──────────────────────────────────────────── */
+  @media (max-width: 700px) {
+    .phone { width: 280px; height: 600px; }
+    .phone-row { gap: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="app-wrapper">
+
+  <!-- ── HERO ────────────────────────────────────────────────── -->
+  <div style="text-align:center; margin-top: 20px;">
+    <div class="hero-title">FLOWW</div>
+    <div class="hero-sub">Gestionnaire de budget lifestyle</div>
+  </div>
+
+  <!-- ── PHONE ROW ─────────────────────────────────────────── -->
+  <div class="phone-row">
+
+    <!-- PHONE 1 : Dashboard -->
+    <div class="phone-col">
+      <div class="phone-label">🏠 Dashboard</div>
+      <div class="phone">
+        <div class="screen">
+          <div class="screen-inner">
+
+            <!-- Header -->
+            <div class="row" style="justify-content:space-between;margin-bottom:16px;">
+              <div>
+                <div class="greeting">Salut Ilyes 👋</div>
+                <div class="greeting-sub">Ton flow — mars 2026</div>
+              </div>
+              <div class="avatar">I</div>
+            </div>
+
+            <!-- Balance hero -->
+            <div class="balance-hero">
+              <div class="balance-label">Solde disponible</div>
+              <div class="balance-amount">387<span style="font-size:28px">€</span></div>
+              <div class="progress-labels">
+                <span>Dépensé 1 213€</span>
+                <span>Budget 1 600€</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" style="width:75.8%"></div>
+              </div>
+            </div>
+
+            <!-- Flow Score card -->
+            <div class="glass-card flow-score-card">
+              <div>
+                <div class="flow-score-title">Flow Score</div>
+                <div class="flow-score-advice">Bon travail ! Tu es dans les clous. Continue sur cette lancée 💪</div>
+              </div>
+              <!-- SVG ring -->
+              <div class="score-ring">
+                <svg width="80" height="80" viewBox="0 0 80 80">
+                  <circle cx="40" cy="40" r="30" fill="none" stroke="#1A1A1A" stroke-width="8"/>
+                  <circle cx="40" cy="40" r="30" fill="none" stroke="#00FF88" stroke-width="8"
+                    stroke-dasharray="188.5" stroke-dashoffset="37.7"
+                    stroke-linecap="round"/>
+                </svg>
+                <div class="score-center">
+                  <div class="score-num">74</div>
+                  <div class="score-lbl">Good</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Allocation cards -->
+            <div class="section-label" style="margin-top:18px;">Répartition du mois</div>
+            <div class="alloc-grid">
+              <div class="alloc-card">
+                <span class="alloc-emoji">💸</span>
+                <div class="alloc-label">Dépenses</div>
+                <div class="alloc-amount" style="color:var(--pleasure)">463€</div>
+                <div class="alloc-sub">Budget 520€</div>
+              </div>
+              <div class="alloc-card">
+                <span class="alloc-emoji">🎯</span>
+                <div class="alloc-label">Épargne</div>
+                <div class="alloc-amount" style="color:var(--neon)">240€</div>
+                <div class="alloc-sub">Taux : 15%</div>
+              </div>
+              <div class="alloc-card">
+                <span class="alloc-emoji">🔁</span>
+                <div class="alloc-label">Abonnements</div>
+                <div class="alloc-amount" style="color:var(--warning)">89€</div>
+                <div class="alloc-sub">7 actifs</div>
+              </div>
+              <div class="alloc-card">
+                <span class="alloc-emoji">🎉</span>
+                <div class="alloc-label">Plaisir dispo</div>
+                <div class="alloc-amount" style="color:var(--violet-light)">57€</div>
+                <div class="alloc-sub">Reste ce mois</div>
+              </div>
+            </div>
+
+            <!-- Upcoming billings -->
+            <div class="section-header" style="margin-top:18px;">
+              <span class="section-title">Prélèvements à venir</span>
+              <span class="section-action">Voir tout</span>
+            </div>
+            <div class="upcoming-row">
+              <div class="upcoming-chip">
+                <div class="upcoming-dot" style="background:#1DB954"></div>
+                <span class="upcoming-name">Spotify</span>
+                <span class="upcoming-amount">10,99€</span>
+                <span class="upcoming-days">J-2</span>
+              </div>
+              <div class="upcoming-chip">
+                <div class="upcoming-dot" style="background:#E50914"></div>
+                <span class="upcoming-name">Netflix</span>
+                <span class="upcoming-amount">13,49€</span>
+                <span class="upcoming-days">J-5</span>
+              </div>
+              <div class="upcoming-chip">
+                <div class="upcoming-dot" style="background:#9146FF"></div>
+                <span class="upcoming-name">Twitch</span>
+                <span class="upcoming-amount">4,99€</span>
+                <span class="upcoming-days">J-7</span>
+              </div>
+            </div>
+
+            <!-- Recent expenses -->
+            <div class="section-header" style="margin-top:18px;">
+              <span class="section-title">Dernières dépenses</span>
+              <span class="section-action">Tout voir</span>
+            </div>
+            <div class="glass-card" style="padding:0;">
+              <div class="expense-list">
+                <div class="expense-row">
+                  <div class="expense-icon" style="background:rgba(249,115,22,.15)">🍔</div>
+                  <div>
+                    <div class="expense-cat">Alimentation</div>
+                    <div class="expense-note">Monoprix rue de Rivoli</div>
+                  </div>
+                  <div class="expense-amount">-32€</div>
+                </div>
+                <div class="expense-row">
+                  <div class="expense-icon" style="background:rgba(168,85,247,.15)">🎮</div>
+                  <div>
+                    <div class="expense-cat">Loisirs</div>
+                    <div class="expense-note">Soirée bowling</div>
+                  </div>
+                  <div class="expense-amount">-18€</div>
+                </div>
+                <div class="expense-row">
+                  <div class="expense-icon" style="background:rgba(59,130,246,.15)">🚇</div>
+                  <div>
+                    <div class="expense-cat">Transport</div>
+                    <div class="expense-note">Navigo mars</div>
+                  </div>
+                  <div class="expense-amount">-86€</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <!-- Tab bar -->
+        <div class="tab-bar">
+          <div class="tab-item active"><span>🏠</span><span>Flow</span></div>
+          <div class="tab-item"><span>📊</span><span>Stats</span></div>
+          <div class="tab-add"><div class="tab-add-btn">＋</div></div>
+          <div class="tab-item"><span>🔁</span><span>Abos</span></div>
+          <div class="tab-item"><span>⚙️</span><span>Profil</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHONE 2 : Add Expense -->
+    <div class="phone-col">
+      <div class="phone-label">➕ Ajouter dépense</div>
+      <div class="phone">
+        <div class="screen">
+          <div class="screen-inner">
+            <div style="margin-bottom:16px;">
+              <div style="font-size:22px;font-weight:800;color:var(--text)">Nouvelle dépense</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:3px;">dimanche 29 mars</div>
+            </div>
+
+            <!-- Amount display -->
+            <div class="amount-display">
+              <span class="amount-currency">€</span>
+              <span class="amount-value">32</span>
+            </div>
+
+            <!-- Keypad -->
+            <div class="keypad" style="margin-bottom:20px;">
+              <button class="key">1</button><button class="key">2</button><button class="key">3</button>
+              <button class="key">4</button><button class="key">5</button><button class="key">6</button>
+              <button class="key">7</button><button class="key">8</button><button class="key">9</button>
+              <button class="key">.</button><button class="key">0</button><button class="key" style="color:var(--text-sec)">⌫</button>
+            </div>
+
+            <!-- Categories -->
+            <div class="section-label">Catégorie</div>
+            <div class="cat-grid" style="margin-bottom:18px;">
+              <div class="cat-card selected"><span>🍔</span><span>Alim.</span></div>
+              <div class="cat-card"><span>🎮</span><span>Loisirs</span></div>
+              <div class="cat-card"><span>👗</span><span>Shopping</span></div>
+              <div class="cat-card"><span>🚗</span><span>Transport</span></div>
+              <div class="cat-card"><span>🏥</span><span>Santé</span></div>
+              <div class="cat-card"><span>📚</span><span>Formation</span></div>
+              <div class="cat-card"><span>🍺</span><span>Sorties</span></div>
+              <div class="cat-card"><span>✈️</span><span>Voyage</span></div>
+              <div class="cat-card"><span>💻</span><span>Tech</span></div>
+              <div class="cat-card"><span>💰</span><span>Autre</span></div>
+            </div>
+
+            <!-- Tag -->
+            <div class="section-label">Nature</div>
+            <div class="tag-row" style="margin-bottom:18px;">
+              <div class="tag-chip selected-need"><span>🏠</span> Besoin</div>
+              <div class="tag-chip selected-want"><span>✨</span> Envie</div>
+              <div class="tag-chip selected-inv"><span>📈</span> Invest.</div>
+            </div>
+
+            <!-- Note -->
+            <div class="section-label">Note</div>
+            <div style="background:var(--bg-elevated);border-radius:12px;padding:12px;margin-bottom:20px;">
+              <div style="font-size:13px;color:var(--text-muted);">Monoprix rue de Rivoli…</div>
+            </div>
+
+            <button class="btn-primary">Enregistrer la dépense</button>
+          </div>
+        </div>
+        <div class="tab-bar">
+          <div class="tab-item"><span>🏠</span><span>Flow</span></div>
+          <div class="tab-item"><span>📊</span><span>Stats</span></div>
+          <div class="tab-add"><div class="tab-add-btn" style="box-shadow:0 0 20px rgba(0,255,136,.7)">＋</div></div>
+          <div class="tab-item"><span>🔁</span><span>Abos</span></div>
+          <div class="tab-item"><span>⚙️</span><span>Profil</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHONE 3 : Subscriptions -->
+    <div class="phone-col">
+      <div class="phone-label">🔁 Abonnements</div>
+      <div class="phone">
+        <div class="screen">
+          <div class="screen-inner">
+            <div class="row" style="justify-content:space-between;margin-bottom:16px;">
+              <div style="font-size:22px;font-weight:800;color:var(--text)">Mes Abos 🔁</div>
+              <div style="background:var(--neon-dim);border:1px solid var(--neon-border);border-radius:20px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--neon);">+ Ajouter</div>
+            </div>
+
+            <!-- Summary -->
+            <div class="glass-card subs-summary">
+              <div class="subs-stat">
+                <div class="subs-stat-val">89€</div>
+                <div class="subs-stat-lbl">/ mois</div>
+              </div>
+              <div class="subs-divider"></div>
+              <div class="subs-stat">
+                <div class="subs-stat-val" style="color:var(--warning)">1 068€</div>
+                <div class="subs-stat-lbl">/ an</div>
+              </div>
+              <div class="subs-divider"></div>
+              <div class="subs-stat">
+                <div class="subs-stat-val" style="color:var(--neon)">7</div>
+                <div class="subs-stat-lbl">actifs</div>
+              </div>
+            </div>
+
+            <!-- Duplicate alert -->
+            <div class="alert-box">
+              <div class="alert-title">⚠️ Doublon détecté</div>
+              <div class="alert-text">Tu as Spotify + Apple Music. Garde seulement un service de musique ?</div>
+            </div>
+
+            <!-- Unused alert -->
+            <div class="alert-box warning">
+              <div class="alert-title">💤 Pas utilisé depuis 30j</div>
+              <div class="alert-text">🎬 Disney+ · 107€/an — Vaut-il encore le coup ?</div>
+            </div>
+
+            <!-- Sub list -->
+            <div class="section-label" style="margin-top:4px;">7 abonnements</div>
+
+            <div class="sub-card">
+              <div class="sub-icon-bg" style="background:rgba(29,185,84,.15)"><span>🎵</span></div>
+              <div>
+                <div class="sub-name">Spotify</div>
+                <div class="sub-meta">Prélèvement dans 2j · Musique</div>
+              </div>
+              <div class="sub-right">
+                <div class="sub-amount" style="color:#1DB954">10,99€</div>
+                <div class="badge badge-green"><div class="badge-dot" style="background:var(--neon)"></div>Actif</div>
+              </div>
+            </div>
+
+            <div class="sub-card">
+              <div class="sub-icon-bg" style="background:rgba(229,9,20,.15)"><span>🎬</span></div>
+              <div>
+                <div class="sub-name">Netflix</div>
+                <div class="sub-meta">Prélèvement dans 5j · Streaming</div>
+              </div>
+              <div class="sub-right">
+                <div class="sub-amount" style="color:#E50914">13,49€</div>
+                <div class="badge badge-green"><div class="badge-dot" style="background:var(--neon)"></div>Actif</div>
+              </div>
+            </div>
+
+            <div class="sub-card">
+              <div class="sub-icon-bg" style="background:rgba(17,60,207,.12)"><span>✨</span></div>
+              <div>
+                <div class="sub-name">Disney+</div>
+                <div class="sub-meta">Prélèvement dans 12j · Streaming</div>
+              </div>
+              <div class="sub-right">
+                <div class="sub-amount" style="color:#113CCF">8,99€</div>
+                <div class="badge badge-red"><div class="badge-dot" style="background:var(--danger)"></div>À annuler</div>
+              </div>
+            </div>
+
+            <div class="sub-card">
+              <div class="sub-icon-bg" style="background:rgba(145,70,255,.15)"><span>🟣</span></div>
+              <div>
+                <div class="sub-name">Twitch Sub</div>
+                <div class="sub-meta">Prélèvement dans 7j · Gaming</div>
+              </div>
+              <div class="sub-right">
+                <div class="sub-amount" style="color:#9146FF">4,99€</div>
+                <div class="badge badge-green"><div class="badge-dot" style="background:var(--neon)"></div>Actif</div>
+              </div>
+            </div>
+
+            <div class="sub-card">
+              <div class="sub-icon-bg" style="background:rgba(16,163,127,.15)"><span>🤖</span></div>
+              <div>
+                <div class="sub-name">ChatGPT Plus</div>
+                <div class="sub-meta">Prélèvement dans 18j · IA</div>
+              </div>
+              <div class="sub-right">
+                <div class="sub-amount" style="color:#10A37F">20,00€</div>
+                <div class="badge badge-yellow"><div class="badge-dot" style="background:var(--warning)"></div>En pause</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="tab-bar">
+          <div class="tab-item"><span>🏠</span><span>Flow</span></div>
+          <div class="tab-item"><span>📊</span><span>Stats</span></div>
+          <div class="tab-add"><div class="tab-add-btn">＋</div></div>
+          <div class="tab-item active"><span>🔁</span><span>Abos</span></div>
+          <div class="tab-item"><span>⚙️</span><span>Profil</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end phone-row 1 -->
+
+  <!-- ── PHONE ROW 2 ────────────────────────────────────────── -->
+  <div class="phone-row">
+
+    <!-- PHONE 4 : Stats -->
+    <div class="phone-col">
+      <div class="phone-label">📊 Stats & Revue mensuelle</div>
+      <div class="phone">
+        <div class="screen">
+          <div class="screen-inner">
+            <div style="font-size:22px;font-weight:800;color:var(--text);margin-bottom:14px;">Stats 📊</div>
+
+            <div class="tabs-row">
+              <button class="tab-btn active">Ce mois</button>
+              <button class="tab-btn">Annuel</button>
+            </div>
+
+            <!-- KPIs -->
+            <div class="kpi-grid">
+              <div class="kpi-card">
+                <div class="kpi-label">Revenus</div>
+                <div class="kpi-value" style="color:var(--neon)">1 600€</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Dépensé</div>
+                <div class="kpi-value" style="color:var(--danger)">463€</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Épargné</div>
+                <div class="kpi-value" style="color:var(--savings)">240€</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Taux</div>
+                <div class="kpi-value" style="color:var(--violet-light)">15%</div>
+              </div>
+            </div>
+
+            <!-- Donut chart -->
+            <div class="section-header">
+              <span class="section-title">Répartition</span>
+            </div>
+            <div class="glass-card" style="margin-bottom:14px;">
+              <div class="donut-wrap">
+                <svg width="100" height="100" viewBox="0 0 100 100" style="flex-shrink:0;">
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="#1A1A1A" stroke-width="14"/>
+                  <!-- Needs 37% -->
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="#3B82F6" stroke-width="14"
+                    stroke-dasharray="88 150" stroke-dashoffset="0" stroke-linecap="butt"
+                    transform="rotate(-90 50 50)"/>
+                  <!-- Savings 15% -->
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="#00FF88" stroke-width="14"
+                    stroke-dasharray="36 202" stroke-dashoffset="-88" stroke-linecap="butt"
+                    transform="rotate(-90 50 50)"/>
+                  <!-- Subs 6% -->
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="#F59E0B" stroke-width="14"
+                    stroke-dasharray="14 224" stroke-dashoffset="-124" stroke-linecap="butt"
+                    transform="rotate(-90 50 50)"/>
+                  <!-- Pleasure 42% -->
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="#A855F7" stroke-width="14"
+                    stroke-dasharray="100 138" stroke-dashoffset="-138" stroke-linecap="butt"
+                    transform="rotate(-90 50 50)"/>
+                  <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="800" fill="#FFF">Mars</text>
+                  <text x="50" y="58" text-anchor="middle" font-size="8" fill="rgba(255,255,255,.5)">2026</text>
+                </svg>
+                <div class="donut-legend">
+                  <div class="legend-item">
+                    <div class="legend-dot" style="background:#3B82F6"></div>
+                    <span class="legend-lbl">Besoins</span>
+                    <span class="legend-pct">37%</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-dot" style="background:var(--neon)"></div>
+                    <span class="legend-lbl">Épargne</span>
+                    <span class="legend-pct">15%</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-dot" style="background:var(--warning)"></div>
+                    <span class="legend-lbl">Abos</span>
+                    <span class="legend-pct">6%</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-dot" style="background:#A855F7"></div>
+                    <span class="legend-lbl">Plaisir</span>
+                    <span class="legend-pct">42%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bar chart dépenses -->
+            <div class="section-header">
+              <span class="section-title">Dépenses par catégorie</span>
+            </div>
+            <div class="glass-card" style="margin-bottom:14px;">
+              <div class="bar-chart">
+                <div class="bar-wrap">
+                  <div class="bar" style="height:65px;background:rgba(249,115,22,.7);"></div>
+                  <span class="bar-lbl">🍔</span>
+                </div>
+                <div class="bar-wrap">
+                  <div class="bar" style="height:40px;background:rgba(168,85,247,.7);"></div>
+                  <span class="bar-lbl">🎮</span>
+                </div>
+                <div class="bar-wrap">
+                  <div class="bar" style="height:30px;background:rgba(236,72,153,.7);"></div>
+                  <span class="bar-lbl">👗</span>
+                </div>
+                <div class="bar-wrap">
+                  <div class="bar" style="height:50px;background:rgba(59,130,246,.7);"></div>
+                  <span class="bar-lbl">🚗</span>
+                </div>
+                <div class="bar-wrap">
+                  <div class="bar" style="height:20px;background:rgba(16,185,129,.7);"></div>
+                  <span class="bar-lbl">🏥</span>
+                </div>
+                <div class="bar-wrap">
+                  <div class="bar" style="height:55px;background:rgba(245,158,11,.7);"></div>
+                  <span class="bar-lbl">🍺</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Top 3 -->
+            <div class="section-header">
+              <span class="section-title">Top dépenses</span>
+            </div>
+            <div class="glass-card" style="padding:0;margin-bottom:14px;">
+              <div class="top-row">
+                <div class="top-icon" style="background:rgba(249,115,22,.15)">🍔</div>
+                <div><div class="top-lbl">Alimentation</div><div class="top-meta">8 transactions</div></div>
+                <div class="top-right"><div class="top-amount">142€</div><div class="top-pct">31%</div></div>
+              </div>
+              <div class="top-row">
+                <div class="top-icon" style="background:rgba(245,158,11,.15)">🍺</div>
+                <div><div class="top-lbl">Sorties</div><div class="top-meta">5 transactions</div></div>
+                <div class="top-right"><div class="top-amount">118€</div><div class="top-pct">25%</div></div>
+              </div>
+              <div class="top-row">
+                <div class="top-icon" style="background:rgba(59,130,246,.15)">🚗</div>
+                <div><div class="top-lbl">Transport</div><div class="top-meta">3 transactions</div></div>
+                <div class="top-right"><div class="top-amount">96€</div><div class="top-pct">21%</div></div>
+              </div>
+            </div>
+
+            <!-- Advice -->
+            <div class="section-header">
+              <span class="section-title">Conseils 💡</span>
+            </div>
+            <div class="advice-card">
+              <div class="advice-text">Sorties représente 25% de tes dépenses ce mois. Passer à 2 sorties/sem t'économise 47€/mois. 🍺</div>
+            </div>
+            <div class="advice-card" style="background:var(--violet-dim);border-color:var(--violet-border)">
+              <div class="advice-text">Excellent mois ! Pense à placer ton surplus sur un livret ou ETF 🚀</div>
+            </div>
+
+          </div>
+        </div>
+        <div class="tab-bar">
+          <div class="tab-item"><span>🏠</span><span>Flow</span></div>
+          <div class="tab-item active"><span>📊</span><span>Stats</span></div>
+          <div class="tab-add"><div class="tab-add-btn">＋</div></div>
+          <div class="tab-item"><span>🔁</span><span>Abos</span></div>
+          <div class="tab-item"><span>⚙️</span><span>Profil</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHONE 5 : Onboarding step 1 -->
+    <div class="phone-col">
+      <div class="phone-label">🚀 Onboarding (Étape 1/5)</div>
+      <div class="phone">
+        <div class="screen">
+          <div class="screen-inner">
+            <div class="ob-logo">FLOWW</div>
+
+            <!-- Step progress -->
+            <div class="progress-steps">
+              <div class="step-dot done"></div>
+              <div class="step-dot"></div>
+              <div class="step-dot"></div>
+              <div class="step-dot"></div>
+              <div class="step-dot"></div>
+            </div>
+
+            <div class="ob-step">Étape 1 / 5</div>
+            <div class="ob-title">Parle-moi de ta situation 👋</div>
+            <div class="ob-sub">Pour personnaliser ton expérience, pas de jugement ici.</div>
+
+            <div class="section-label">Ta situation</div>
+            <div class="ob-grid">
+              <div class="ob-card selected">
+                <span class="ob-card-emoji">📚</span>
+                <div class="ob-card-label">Étudiant</div>
+                <div class="ob-card-desc">Bourse, aide familiale, petits boulots</div>
+              </div>
+              <div class="ob-card">
+                <span class="ob-card-emoji">💼</span>
+                <div class="ob-card-label">Alternant</div>
+                <div class="ob-card-desc">Salaire alternance + études</div>
+              </div>
+              <div class="ob-card">
+                <span class="ob-card-emoji">🎓</span>
+                <div class="ob-card-label">Jeune diplômé</div>
+                <div class="ob-card-desc">Premier CDI/CDD</div>
+              </div>
+              <div class="ob-card">
+                <span class="ob-card-emoji">🚀</span>
+                <div class="ob-card-label">Freelance</div>
+                <div class="ob-card-desc">Revenus variables</div>
+              </div>
+            </div>
+
+            <div class="section-label" style="margin-top:18px;">Fréquence de revenus</div>
+
+            <!-- Freq options -->
+            <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:24px;">
+              <div style="background:var(--neon-dim);border:1.5px solid var(--neon);border-radius:12px;padding:13px 14px;display:flex;align-items:center;gap:12px;">
+                <div style="width:20px;height:20px;border-radius:10px;border:2px solid var(--neon);display:flex;align-items:center;justify-content:center;">
+                  <div style="width:10px;height:10px;border-radius:5px;background:var(--neon)"></div>
+                </div>
+                <div>
+                  <div style="font-size:14px;font-weight:700;color:var(--neon)">Mensuel</div>
+                  <div style="font-size:11px;color:var(--text-muted)">Virement chaque mois</div>
+                </div>
+              </div>
+              <div style="background:var(--bg-card);border:1.5px solid var(--border);border-radius:12px;padding:13px 14px;display:flex;align-items:center;gap:12px;">
+                <div style="width:20px;height:20px;border-radius:10px;border:2px solid var(--border);"></div>
+                <div>
+                  <div style="font-size:14px;font-weight:700;color:var(--text)">Bi-mensuel</div>
+                  <div style="font-size:11px;color:var(--text-muted)">2x par mois</div>
+                </div>
+              </div>
+              <div style="background:var(--bg-card);border:1.5px solid var(--border);border-radius:12px;padding:13px 14px;display:flex;align-items:center;gap:12px;">
+                <div style="width:20px;height:20px;border-radius:10px;border:2px solid var(--border);"></div>
+                <div>
+                  <div style="font-size:14px;font-weight:700;color:var(--text)">Irrégulier</div>
+                  <div style="font-size:11px;color:var(--text-muted)">Ça varie selon les mois</div>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn-primary">Continuer →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHONE 6 : Profile -->
+    <div class="phone-col">
+      <div class="phone-label">⚙️ Profil</div>
+      <div class="phone">
+        <div class="screen">
+          <div class="screen-inner">
+
+            <div class="profile-avatar-section">
+              <div class="profile-avatar">I</div>
+              <div class="profile-name">Ilyes</div>
+              <div class="profile-situation">Alternant</div>
+            </div>
+
+            <!-- Financial summary -->
+            <div class="glass-card" style="margin-bottom:12px;">
+              <div class="section-label" style="margin-bottom:10px;">Résumé financier</div>
+              <div class="info-row">
+                <span class="info-lbl">Revenus nets</span>
+                <span class="info-val" style="color:var(--neon)">1 600€</span>
+              </div>
+              <div class="info-row">
+                <span class="info-lbl">Charges fixes</span>
+                <span class="info-val" style="color:var(--danger)">808€</span>
+              </div>
+              <div class="info-row">
+                <span class="info-lbl">Abonnements</span>
+                <span class="info-val" style="color:var(--warning)">89€</span>
+              </div>
+              <div class="info-row" style="border-bottom:none;">
+                <span class="info-lbl">Disponible estimé</span>
+                <span class="info-val" style="color:var(--neon);font-weight:800;font-size:15px;">703€</span>
+              </div>
+            </div>
+
+            <!-- Profile info -->
+            <div class="glass-card" style="margin-bottom:12px;">
+              <div class="section-label" style="margin-bottom:10px;">Mon profil</div>
+              <div class="info-row">
+                <span class="info-lbl">Objectif</span>
+                <span class="info-val">⚖️ Tout équilibrer</span>
+              </div>
+              <div class="info-row">
+                <span class="info-lbl">Confort</span>
+                <span class="info-val">⚖️ Équilibré</span>
+              </div>
+              <div class="info-row">
+                <span class="info-lbl">Fréquence</span>
+                <span class="info-val">Mensuel</span>
+              </div>
+              <div class="info-row" style="border-bottom:none;">
+                <span class="info-lbl">Objectif épargne</span>
+                <span class="info-val" style="color:var(--neon)">240€/mois</span>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div style="background:var(--bg-card);border-radius:14px;overflow:hidden;margin-bottom:16px;">
+              <div class="action-row">
+                <span class="action-emoji">✏️</span>
+                <span class="action-label">Modifier mes revenus</span>
+                <span class="action-chevron">›</span>
+              </div>
+              <div class="action-row">
+                <span class="action-emoji">🏠</span>
+                <span class="action-label">Modifier mes charges</span>
+                <span class="action-chevron">›</span>
+              </div>
+              <div class="action-row" style="border-bottom:none;">
+                <span class="action-emoji">🎯</span>
+                <span class="action-label">Modifier mes objectifs</span>
+                <span class="action-chevron">›</span>
+              </div>
+            </div>
+
+            <button class="btn-ghost" style="border-color:var(--danger-border);color:var(--danger);background:var(--danger-dim);">
+              🗑 Réinitialiser FLOWW
+            </button>
+
+            <div style="text-align:center;font-size:11px;color:var(--text-muted);margin-top:16px;">FLOWW v1.0 · Made with 💚</div>
+
+          </div>
+        </div>
+        <div class="tab-bar">
+          <div class="tab-item"><span>🏠</span><span>Flow</span></div>
+          <div class="tab-item"><span>📊</span><span>Stats</span></div>
+          <div class="tab-add"><div class="tab-add-btn">＋</div></div>
+          <div class="tab-item"><span>🔁</span><span>Abos</span></div>
+          <div class="tab-item active"><span>⚙️</span><span>Profil</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end phone-row 2 -->
+
+ 
+  <!-- ── PHONE ROW 4 : Coach IA ──────────────────────────────── -->
+  <div style="text-align:center;margin:32px 0 16px;">
+    <span style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:1px;text-transform:uppercase;">Coach IA — Stratégie financière</span>
+  </div>
+  <div class="phone-row" style="margin-top:16px;justify-content:center;">
+
+    <!-- PHONE 10 : Coach pre-analysis -->
+    <div class="phone-wrap">
+      <div class="phone-label">🧠 Coach IA — Saisie</div>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+        <div class="screen-scroll" style="padding:16px;gap:14px;">
+          <div style="margin-bottom:4px;">
+            <div style="font-size:22px;font-weight:900;color:#fff;letter-spacing:-.5px;">Coach IA 🧠</div>
+            <div style="font-size:11px;color:var(--text-sec);margin-top:3px;">Stratégie financière personnalisée basée sur ton profil</div>
+          </div>
+          <!-- Summary strip -->
+          <div class="glass-card" style="padding:12px;">
+            <div style="display:flex;align-items:center;">
+              <div style="flex:1;text-align:center;">
+                <div style="font-size:13px;font-weight:700;color:var(--neon);">2 400 €</div>
+                <div style="font-size:8px;text-transform:uppercase;color:var(--text-muted);font-weight:700;">Revenus</div>
+              </div>
+              <div style="width:1px;height:28px;background:var(--border)"></div>
+              <div style="flex:1;text-align:center;">
+                <div style="font-size:13px;font-weight:700;color:var(--danger);">1 050 €</div>
+                <div style="font-size:8px;text-transform:uppercase;color:var(--text-muted);font-weight:700;">Charges</div>
+              </div>
+              <div style="width:1px;height:28px;background:var(--border)"></div>
+              <div style="flex:1;text-align:center;">
+                <div style="font-size:14px;font-weight:900;color:var(--warning);">1 350 €</div>
+                <div style="font-size:8px;text-transform:uppercase;color:var(--text-muted);font-weight:700;">Disponible</div>
+              </div>
+            </div>
+          </div>
+          <!-- Input card -->
+          <div class="glass-card" style="padding:14px;gap:10px;">
+            <div style="font-size:14px;font-weight:800;color:#fff;">Avant l'analyse</div>
+            <div style="font-size:11px;color:var(--text-sec);line-height:16px;">Combien de mois de dépenses as-tu déjà en épargne de sécurité ?</div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="background:rgba(255,255,255,0.06);border-radius:10px;padding:8px 20px;font-size:18px;font-weight:800;color:#fff;">1</div>
+              <span style="font-size:13px;color:var(--text-sec);font-weight:600;">mois</span>
+            </div>
+            <div style="background:var(--neon);border-radius:12px;padding:12px;text-align:center;margin-top:4px;">
+              <span style="font-size:13px;font-weight:800;color:#0D0D0D;">🔍 Analyser ma situation</span>
+            </div>
+          </div>
+        </div>
+        <div class="tab-bar">
+          <div class="tab-item"><span>🏠</span><span>Flow</span></div>
+          <div class="tab-item"><span>📊</span><span>Stats</span></div>
+          <div class="tab-item tab-add"><span style="font-size:20px;font-weight:900;color:#0D0D0D;line-height:1;">＋</span></div>
+          <div class="tab-item active"><span>🧠</span><span>Coach</span></div>
+          <div class="tab-item"><span>🔁</span><span>Abos</span></div>
+          <div class="tab-item"><span>⚙️</span><span>Profil</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHONE 11 : Coach results — allocations -->
+    <div class="phone-wrap">
+      <div class="phone-label">📊 Coach IA — Répartition</div>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+        <div class="screen-scroll" style="padding:16px;gap:12px;">
+          <!-- Score card -->
+          <div class="glass-card" style="padding:14px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="flex:1;gap:6px;">
+                <div style="font-size:14px;font-weight:800;color:#fff;">Score Financier</div>
+                <div style="font-size:10px;color:var(--text-sec);line-height:15px;">Taux d'épargne, ratios charges/revenus, fonds de sécurité.</div>
+                <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:4px 8px;display:inline-block;margin-top:4px;">
+                  <span style="font-size:10px;font-weight:700;color:var(--text-muted);">↩ Recalculer</span>
+                </div>
+              </div>
+              <div style="width:80px;height:80px;border-radius:40px;border:4px solid var(--neon-border);background:var(--neon-dim);display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                <span style="font-size:24px;font-weight:900;color:var(--neon);">74</span>
+                <span style="font-size:8px;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Solide</span>
+              </div>
+            </div>
+          </div>
+          <!-- Tabs -->
+          <div style="display:flex;gap:6px;">
+            <div style="flex:1;padding:8px;background:var(--neon-dim);border:1px solid var(--neon-border);border-radius:10px;text-align:center;">
+              <span style="font-size:9px;font-weight:700;color:var(--neon);">💰 Répartition</span>
+            </div>
+            <div style="flex:1;padding:8px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;text-align:center;">
+              <span style="font-size:9px;font-weight:700;color:var(--text-muted);">💡 Conseils</span>
+            </div>
+            <div style="flex:1;padding:8px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;text-align:center;">
+              <span style="font-size:9px;font-weight:700;color:var(--text-muted);">📊 Évolution</span>
+            </div>
+          </div>
+          <!-- Allocation cards -->
+          <div style="background:var(--bg-card);border-radius:12px;padding:10px;border:1px solid var(--border);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:18px;">🛡️</span>
+                <div>
+                  <div style="font-size:11px;font-weight:700;color:#fff;">Épargne sécurité</div>
+                  <div style="font-size:10px;font-weight:800;color:#3B82F6;margin-top:1px;">22%</div>
+                </div>
+              </div>
+              <div style="font-size:13px;font-weight:800;color:#3B82F6;">297 €</div>
+            </div>
+            <div style="height:4px;background:var(--bg-elevated);border-radius:2px;"><div style="height:4px;border-radius:2px;background:#3B82F6;width:22%;"></div></div>
+          </div>
+          <div style="background:var(--bg-card);border-radius:12px;padding:10px;border:1px solid var(--border);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:18px;">📈</span>
+                <div>
+                  <div style="font-size:11px;font-weight:700;color:#fff;">Investissement</div>
+                  <div style="font-size:10px;font-weight:800;color:#00FF88;margin-top:1px;">28%</div>
+                </div>
+              </div>
+              <div style="font-size:13px;font-weight:800;color:#00FF88;">378 €</div>
+            </div>
+            <div style="height:4px;background:var(--bg-elevated);border-radius:2px;"><div style="height:4px;border-radius:2px;background:#00FF88;width:28%;"></div></div>
+          </div>
+          <div style="background:var(--bg-card);border-radius:12px;padding:10px;border:1px solid var(--border);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:18px;">✨</span>
+                <div>
+                  <div style="font-size:11px;font-weight:700;color:#fff;">Plaisir & lifestyle</div>
+                  <div style="font-size:10px;font-weight:800;color:#F59E0B;margin-top:1px;">30%</div>
+                </div>
+              </div>
+              <div style="font-size:13px;font-weight:800;color:#F59E0B;">405 €</div>
+            </div>
+            <div style="height:4px;background:var(--bg-elevated);border-radius:2px;"><div style="height:4px;border-radius:2px;background:#F59E0B;width:30%;"></div></div>
+          </div>
+          <div style="background:var(--bg-card);border-radius:12px;padding:10px;border:1px solid var(--border);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:18px;">🎯</span>
+                <div>
+                  <div style="font-size:11px;font-weight:700;color:#fff;">Projets perso</div>
+                  <div style="font-size:10px;font-weight:800;color:#8B5CF6;margin-top:1px;">11%</div>
+                </div>
+              </div>
+              <div style="font-size:13px;font-weight:800;color:#8B5CF6;">149 €</div>
+            </div>
+            <div style="height:4px;background:var(--bg-elevated);border-radius:2px;"><div style="height:4px;border-radius:2px;background:#8B5CF6;width:11%;"></div></div>
+          </div>
+          <div style="background:var(--bg-card);border-radius:12px;padding:10px;border:1px solid var(--border);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:18px;">🚀</span>
+                <div>
+                  <div style="font-size:11px;font-weight:700;color:#fff;">Optimisation</div>
+                  <div style="font-size:10px;font-weight:800;color:#EC4899;margin-top:1px;">9%</div>
+                </div>
+              </div>
+              <div style="font-size:13px;font-weight:800;color:#EC4899;">122 €</div>
+            </div>
+            <div style="height:4px;background:var(--bg-elevated);border-radius:2px;"><div style="height:4px;border-radius:2px;background:#EC4899;width:9%;"></div></div>
+          </div>
+        </div>
+        <div class="tab-bar">
+          <div class="tab-item"><span>🏠</span><span>Flow</span></div>
+          <div class="tab-item"><span>📊</span><span>Stats</span></div>
+          <div class="tab-item tab-add"><span style="font-size:20px;font-weight:900;color:#0D0D0D;line-height:1;">＋</span></div>
+          <div class="tab-item active"><span>🧠</span><span>Coach</span></div>
+          <div class="tab-item"><span>🔁</span><span>Abos</span></div>
+          <div class="tab-item"><span>⚙️</span><span>Profil</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHONE 12 : Coach — Advice tab -->
+    <div class="phone-wrap">
+      <div class="phone-label">💡 Coach IA — Conseils</div>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+        <div class="screen-scroll" style="padding:16px;gap:10px;">
+          <!-- Score mini -->
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+            <div>
+              <div style="font-size:20px;font-weight:900;color:#fff;">Coach IA 🧠</div>
+              <div style="font-size:10px;color:var(--text-sec);margin-top:2px;">Analyse personnalisée · Score 74/100</div>
+            </div>
+            <div style="width:48px;height:48px;border-radius:24px;border:3px solid var(--neon-border);background:var(--neon-dim);display:flex;align-items:center;justify-content:center;">
+              <span style="font-size:16px;font-weight:900;color:var(--neon);">74</span>
+            </div>
+          </div>
+          <!-- Tabs -->
+          <div style="display:flex;gap:6px;margin-bottom:4px;">
+            <div style="flex:1;padding:8px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;text-align:center;">
+              <span style="font-size:9px;font-weight:700;color:var(--text-muted);">💰 Répartition</span>
+            </div>
+            <div style="flex:1;padding:8px;background:var(--neon-dim);border:1px solid var(--neon-border);border-radius:10px;text-align:center;">
+              <span style="font-size:9px;font-weight:700;color:var(--neon);">💡 Conseils</span>
+            </div>
+            <div style="flex:1;padding:8px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;text-align:center;">
+              <span style="font-size:9px;font-weight:700;color:var(--text-muted);">📊 Évolution</span>
+            </div>
+          </div>
+          <!-- Advice cards -->
+          <div style="background:var(--bg-card);border-radius:12px;padding:12px;border:1px solid var(--border);">
+            <div style="font-size:11px;color:#fff;line-height:16px;">💪 Excellent ratio reste-à-vivre (+56%). Tu es en position idéale pour accélérer ton patrimoine.</div>
+          </div>
+          <div style="background:var(--bg-card);border-radius:12px;padding:12px;border:1px solid var(--border);">
+            <div style="font-size:11px;color:#fff;line-height:16px;">🏆 Taux d'épargne de 22% : tu es dans le top 15% de ta génération. Continue.</div>
+          </div>
+          <div style="background:var(--bg-card);border-radius:12px;padding:12px;border:1px solid var(--border);">
+            <div style="font-size:11px;color:#fff;line-height:16px;">📉 En bourse, le temps prime sur le montant. 100€/mois × 30 ans à 7%/an = 121 000€. Commencer tôt &gt; investir beaucoup tard.</div>
+          </div>
+          <div style="background:var(--bg-card);border-radius:12px;padding:12px;border:1px solid var(--border);">
+            <div style="font-size:11px;color:#fff;line-height:16px;">🔁 Automatise tes virements le jour de paie. Ce que tu ne vois pas, tu ne le dépenses pas.</div>
+          </div>
+          <div style="background:var(--bg-card);border-radius:12px;padding:12px;border:1px solid var(--border);">
+            <div style="font-size:11px;color:#fff;line-height:16px;">📱 PEA + ETF MSCI World : frais &lt; 0.25%/an, diversification mondiale, fiscalité avantageuse après 5 ans.</div>
+          </div>
+          <div style="background:var(--bg-card);border-radius:12px;padding:12px;border:1px solid var(--border);">
+            <div style="font-size:11px;color:#fff;line-height:16px;">🎯 Crée un livret dédié par projet. Nommer un compte "Japon 2026" augmente la motivation x3.</div>
+          </div>
+        </div>
+        <div class="tab-bar">
+          <div class="tab-item"><span>🏠</span><span>Flow</span></div>
+          <div class="tab-item"><span>📊</span><span>Stats</span></div>
+          <div class="tab-item tab-add"><span style="font-size:20px;font-weight:900;color:#0D0D0D;line-height:1;">＋</span></div>
+          <div class="tab-item active"><span>🧠</span><span>Coach</span></div>
+          <div class="tab-item"><span>🔁</span><span>Abos</span></div>
+          <div class="tab-item"><span>⚙️</span><span>Profil</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end phone-row 4 -->
+
+  <!-- ── Feature cards ─────────────────────────────────────── -->
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-emoji">💰</div>
+      <div class="feature-title">Setup financier complet</div>
+      <div class="feature-desc">Onboarding 5 étapes : situation, revenus (6 sources), charges fixes (9 postes), abonnements, objectifs.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-emoji">📊</div>
+      <div class="feature-title">Dashboard temps réel</div>
+      <div class="feature-desc">Solde disponible, Flow Score animé, 4 cartes d'allocation, prélèvements à venir, dernières dépenses.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-emoji">🔁</div>
+      <div class="feature-title">Suivi abonnements</div>
+      <div class="feature-desc">35 presets visuels, détection doublons, alertes non-utilisé 30j, total mensuel/annuel.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-emoji">✍️</div>
+      <div class="feature-title">Saisie dépenses 3 taps</div>
+      <div class="feature-desc">Clavier custom, 10 catégories, tags Besoin/Envie/Investissement, note optionnelle, récurrentes.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-emoji">📈</div>
+      <div class="feature-title">Revue mensuelle & annuelle</div>
+      <div class="feature-desc">Donut, barres, top 3 postes, conseils personnalisés, comparaison N-1, simulation ETF 7%.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-emoji">🎯</div>
+      <div class="feature-title">Flow Score 0–100</div>
+      <div class="feature-desc">4 composantes : taux d'épargne, respect du budget plaisir, ratio charges/revenus, régularité.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-emoji">🎨</div>
+      <div class="feature-title">Design System</div>
+      <div class="feature-desc">Dark mode natif, néon #00FF88 + violet, glassmorphisme, Reanimated 3, haptic feedback.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-emoji">🔔</div>
+      <div class="feature-title">Alertes intelligentes</div>
+      <div class="feature-desc">Push J-3 avant prélèvement, alerte abonnement inutilisé, détection doublons de catégorie.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-emoji">🧠</div>
+      <div class="feature-title">Coach IA financier</div>
+      <div class="feature-desc">Analyse ton reste-à-vivre et génère une stratégie complète : épargne, investissement, plaisir, projets, optimisation — avec scénarios évolutifs.</div>
+    </div>
+  </div>
+
+</div><!-- end app-wrapper -->
+</body>
+</html>
