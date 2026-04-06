@@ -1096,22 +1096,20 @@
     }
     .projects-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 28px;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 24px;
     }
     .projects-grid-bottom {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 28px;
-      margin-top: 28px;
+      display: none;
     }
-    @media (max-width: 1024px) {
+    @media (max-width: 1200px) {
+      .projects-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 768px) {
       .projects-grid { grid-template-columns: repeat(2, 1fr); }
-      .projects-grid-bottom { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 480px) {
       .projects-grid { grid-template-columns: 1fr; }
-      .projects-grid-bottom { grid-template-columns: 1fr; }
     }
     .project-card {
       background: rgba(19, 25, 39, 0.7);
@@ -2134,9 +2132,34 @@
         </div>
       </div>
 
-    </div>
-
-    <div class="projects-grid-bottom">
+      <!-- Custom RAT -->
+      <div class="project-card reveal">
+        <div class="project-img"><img src="Image/trojan.png" alt="Custom RAT"></div>
+        <div class="project-header">
+          <div class="project-icon edr" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-green)" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8l3 3-3 3" stroke="var(--accent-green)" stroke-width="2"/><line x1="13" y1="13" x2="17" y2="13" stroke="var(--accent-green)" stroke-width="2"/></svg>
+          </div>
+          <span class="project-label">Red Team</span>
+        </div>
+        <div class="project-body">
+          <h3 class="project-title">Custom RAT — Remote Access Trojan de A à Z</h3>
+          <p class="project-desc">
+            Développement complet d'un RAT en lab isolé : agent C/C++17 (keylogger,
+            screenshot, remote shell, persistance) et serveur C2 Python avec
+            chiffrement TLS 1.3 + AES-256. Approche Red Team / Blue Team.
+          </p>
+          <div class="project-stack">
+            <span class="tag">C/C++</span>
+            <span class="tag">Python</span>
+            <span class="tag">TLS 1.3</span>
+            <span class="tag">VMware</span>
+            <span class="tag">Red Team</span>
+          </div>
+          <div class="project-links">
+            <a href="assets/pdf/rapport-custom-rat.pdf" class="project-link" target="_blank" aria-label="Voir les détails">Détails</a>
+          </div>
+        </div>
+      </div>
 
       <!-- 4. Phishing -->
       <div class="project-card reveal">
@@ -2222,10 +2245,6 @@
           </div>
         </div>
       </div>
-
-    </div>
-
-    <div class="projects-grid-bottom">
 
       <!-- 6. Active Directory -->
       <div class="project-card reveal">
