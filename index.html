@@ -969,31 +969,34 @@
       overflow: hidden;
       position: relative;
       padding: 40px 0;
+      cursor: grab;
     }
+    .marquee-wrapper:active { cursor: grabbing; }
     .marquee-wrapper::before, .marquee-wrapper::after {
       content: '';
       position: absolute;
       top: 0;
       bottom: 0;
-      width: 100px;
+      width: 80px;
       z-index: 2;
+      pointer-events: none;
     }
     .marquee-wrapper::before { left: 0; background: linear-gradient(90deg, var(--bg-primary), transparent); }
     .marquee-wrapper::after { right: 0; background: linear-gradient(90deg, transparent, var(--bg-primary)); }
     .marquee-track {
       display: flex;
-      gap: 48px;
-      animation: marqueeScroll 80s linear infinite;
+      gap: 24px;
       width: max-content;
+      padding: 0 48px;
+      animation: marqueeScroll 80s linear infinite;
     }
     .marquee-track:hover { animation-play-state: paused; }
-    .marquee-wrapper { cursor: grab; }
-    .marquee-wrapper:active { cursor: grabbing; }
-    .marquee-wrapper.dragging .marquee-track { animation-play-state: paused !important; }
+    .marquee-wrapper.dragging .marquee-track { animation: none !important; }
     @keyframes marqueeScroll {
       0% { transform: translateX(0); }
       100% { transform: translateX(-50%); }
     }
+    .cert-marquee { animation-duration: 120s !important; }
     .marquee-item {
       display: flex;
       align-items: center;
@@ -1047,7 +1050,7 @@
       flex-shrink: 0;
     }
     .marquee-letter:hover { border-color: var(--accent-green); }
-    .cert-marquee { animation-duration: 120s; }
+    .cert-marquee { }
     .cert-marquee-badge {
       font-family: var(--font-mono);
       font-size: 0.85rem;
@@ -1071,8 +1074,6 @@
     .cert-marquee-status.in-progress { color: var(--accent-gold); }
 
     @media (max-width: 768px) {
-      .marquee-track { animation-duration: 60s; }
-      .cert-marquee { animation-duration: 90s; }
       .marquee-item { min-width: 400px; }
     }
 
@@ -2341,22 +2342,6 @@
       <div class="marquee-item" style="border-color:rgba(0,85,164,0.3)"><div class="cert-marquee-badge" style="padding:0;overflow:hidden"><img src="Image/logo-anssi-1.jpg" alt="ANSSI" style="width:100%;height:100%;object-fit:cover;border-radius:10px"></div><div><div class="marquee-author-name">Certification MOOC ANSSI</div><div class="marquee-author-role">Janv. 2022</div></div><span class="cert-marquee-status obtained">&#10003;</span></div>
       <div class="marquee-item" style="border-color:rgba(251,191,36,0.3)"><div class="cert-marquee-badge" style="background:rgba(251,191,36,0.1);color:var(--accent-gold)">CCD</div><div><div class="marquee-author-name">CCD Cyber Defenders</div><div class="marquee-author-role">En cours</div></div><span class="cert-marquee-status in-progress">&#9203;</span></div>
       <div class="marquee-item" style="border-color:rgba(0,180,216,0.3)"><div class="cert-marquee-badge" style="background:rgba(0,180,216,0.1);color:var(--accent-blue)">MS</div><div><div class="marquee-author-name">SC-200</div><div class="marquee-author-role">Objectif 2026</div></div><span class="cert-marquee-status in-progress">&#9203;</span></div>
-      <!-- Duplicate for seamless loop -->
-      <div class="marquee-item" style="border-color:rgba(0,201,167,0.3)"><div class="cert-marquee-badge" style="padding:0;overflow:hidden"><img src="Image/Trellix.jpg" alt="Trellix" style="width:100%;height:100%;object-fit:cover;border-radius:10px"></div><div><div class="marquee-author-name">Certification ePolicy Orchestrator</div><div class="marquee-author-role">Oct. 2025</div></div><span class="cert-marquee-status obtained">&#10003;</span></div>
-      <div class="marquee-item" style="border-color:rgba(0,201,167,0.3)"><div class="cert-marquee-badge" style="padding:0;overflow:hidden"><img src="Image/Trellix.jpg" alt="Trellix" style="width:100%;height:100%;object-fit:cover;border-radius:10px"></div><div><div class="marquee-author-name">Detection & Prevention with ENS Expert Rules</div><div class="marquee-author-role">Oct. 2025</div></div><span class="cert-marquee-status obtained">&#10003;</span></div>
-      <div class="marquee-item" style="border-color:rgba(0,201,167,0.3)"><div class="cert-marquee-badge" style="padding:0;overflow:hidden"><img src="Image/Trellix.jpg" alt="Trellix" style="width:100%;height:100%;object-fit:cover;border-radius:10px"></div><div><div class="marquee-author-name">Network Security for System Administrators</div><div class="marquee-author-role">Oct. 2025</div></div><span class="cert-marquee-status obtained">&#10003;</span></div>
-      <div class="marquee-item" style="border-color:rgba(0,201,167,0.3)"><div class="cert-marquee-badge" style="padding:0;overflow:hidden"><img src="Image/Trellix.jpg" alt="Trellix" style="width:100%;height:100%;object-fit:cover;border-radius:10px"></div><div><div class="marquee-author-name">Endpoint Security Essentials (HX) Essentials</div><div class="marquee-author-role">Oct. 2025</div></div><span class="cert-marquee-status obtained">&#10003;</span></div>
-      <div class="marquee-item" style="border-color:rgba(0,201,167,0.3)"><div class="cert-marquee-badge" style="padding:0;overflow:hidden"><img src="Image/Trellix.jpg" alt="Trellix" style="width:100%;height:100%;object-fit:cover;border-radius:10px"></div><div><div class="marquee-author-name">Endpoint Security Essentials</div><div class="marquee-author-role">Oct. 2025</div></div><span class="cert-marquee-status obtained">&#10003;</span></div>
-      <div class="marquee-item" style="border-color:rgba(156,163,175,0.2)"><div class="cert-marquee-badge" style="background:#2a2a2a;color:#9ca3af;font-size:0.5rem;letter-spacing:1px;font-weight:900"><svg width="32" height="18" viewBox="0 0 40 18"><text x="2" y="14" font-family="Arial,sans-serif" font-size="10" font-weight="900" fill="#9ca3af" letter-spacing="2">DGTL</text></svg></div><div><div class="marquee-author-name">Sensibilisation à la Cybersécurité et Innovation</div><div class="marquee-author-role">Mars 2025</div></div><span class="cert-marquee-status obtained">&#10003;</span></div>
-      <div class="marquee-item" style="border-color:rgba(26,31,78,0.5)"><div class="cert-marquee-badge" style="padding:0;overflow:hidden"><img src="Image/cnil-logo_rvb.jpg" alt="CNIL" style="width:100%;height:100%;object-fit:cover;border-radius:10px"></div><div><div class="marquee-author-name">L'Atelier RGPD — CNIL</div><div class="marquee-author-role">Mars 2025</div></div><span class="cert-marquee-status obtained">&#10003;</span></div>
-
-      <div class="marquee-item" style="border-color:rgba(226,53,139,0.3)"><div class="cert-marquee-badge" style="background:linear-gradient(135deg,#e2358b,#f58732);color:#fff;font-size:0.55rem;letter-spacing:0">splunk&gt;</div><div><div class="marquee-author-name">Certification Splunk SIEM</div><div class="marquee-author-role">Nov. 2023</div></div><span class="cert-marquee-status obtained">&#10003;</span></div>
-      <div class="marquee-item" style="border-color:rgba(0,51,153,0.3)"><div class="cert-marquee-badge" style="padding:0;overflow:hidden"><img src="Image/DRSD.jpg" alt="DRSD" style="width:100%;height:100%;object-fit:cover;border-radius:10px"></div><div><div class="marquee-author-name">Certification La Protection du Secret</div><div class="marquee-author-role">Juin 2023</div></div><span class="cert-marquee-status obtained">&#10003;</span></div>
-      <div class="marquee-item" style="border-color:rgba(200,32,47,0.3)"><div class="cert-marquee-badge" style="background:#e8889a;color:#fff;font-size:0.55rem;letter-spacing:0">CompTIA</div><div><div class="marquee-author-name">COMPTIA Security+</div><div class="marquee-author-role">Fév. 2023</div></div><span class="cert-marquee-status obtained">&#10003;</span></div>
-      <div class="marquee-item" style="border-color:rgba(4,159,217,0.3)"><div class="cert-marquee-badge" style="padding:0;overflow:hidden"><img src="Image/cisco_logo_blue_1200x675.jpg" alt="Cisco" style="width:100%;height:100%;object-fit:cover;border-radius:10px"></div><div><div class="marquee-author-name">Introduction to Cybersecurity Cisco</div><div class="marquee-author-role">Janv. 2022</div></div><span class="cert-marquee-status obtained">&#10003;</span></div>
-      <div class="marquee-item" style="border-color:rgba(0,85,164,0.3)"><div class="cert-marquee-badge" style="padding:0;overflow:hidden"><img src="Image/logo-anssi-1.jpg" alt="ANSSI" style="width:100%;height:100%;object-fit:cover;border-radius:10px"></div><div><div class="marquee-author-name">Certification MOOC ANSSI</div><div class="marquee-author-role">Janv. 2022</div></div><span class="cert-marquee-status obtained">&#10003;</span></div>
-      <div class="marquee-item" style="border-color:rgba(251,191,36,0.3)"><div class="cert-marquee-badge" style="background:rgba(251,191,36,0.1);color:var(--accent-gold)">CCD</div><div><div class="marquee-author-name">CCD Cyber Defenders</div><div class="marquee-author-role">En cours</div></div><span class="cert-marquee-status in-progress">&#9203;</span></div>
-      <div class="marquee-item" style="border-color:rgba(0,180,216,0.3)"><div class="cert-marquee-badge" style="background:rgba(0,180,216,0.1);color:var(--accent-blue)">MS</div><div><div class="marquee-author-name">SC-200</div><div class="marquee-author-role">Objectif 2026</div></div><span class="cert-marquee-status in-progress">&#9203;</span></div>
     </div>
   </div>
 </section>
@@ -2817,54 +2802,66 @@ document.addEventListener('mousemove', function(e) {
 });
 document.addEventListener('mouseup', function() { dragEl = null; });
 
-/* Marquee drag to scroll */
+/* Marquee: duplicate items for seamless loop + drag to scroll */
+document.querySelectorAll('.marquee-track').forEach(function(track) {
+  var items = Array.from(track.children);
+  items.forEach(function(item) {
+    track.appendChild(item.cloneNode(true));
+  });
+});
+
 document.querySelectorAll('.marquee-wrapper').forEach(function(wrapper) {
   var track = wrapper.querySelector('.marquee-track');
-  var startX = 0, scrollLeft = 0, isDragging = false;
+  var isDragging = false, startX = 0, dragOffset = 0;
+  var halfWidth = track.scrollWidth / 2;
+
+  /* Stop CSS animation, switch to JS-driven scroll */
+  var pos = 0, speed = -0.3, rafId;
+  track.style.animation = 'none';
+
+  function autoScroll() {
+    if (!isDragging) {
+      pos += speed;
+      if (pos <= -halfWidth) pos += halfWidth;
+      if (pos > 0) pos -= halfWidth;
+      track.style.transform = 'translateX(' + pos + 'px)';
+    }
+    rafId = requestAnimationFrame(autoScroll);
+  }
+  autoScroll();
+
   wrapper.addEventListener('mousedown', function(e) {
     isDragging = true;
-    wrapper.classList.add('dragging');
     startX = e.pageX;
-    var transform = getComputedStyle(track).transform;
-    var matrix = new DOMMatrix(transform);
-    scrollLeft = matrix.m41;
+    dragOffset = pos;
     e.preventDefault();
   });
-  wrapper.addEventListener('mousemove', function(e) {
+  document.addEventListener('mousemove', function(e) {
     if (!isDragging) return;
-    var dx = e.pageX - startX;
-    track.style.transform = 'translateX(' + (scrollLeft + dx) + 'px)';
+    pos = dragOffset + (e.pageX - startX);
+    if (pos <= -halfWidth) pos += halfWidth;
+    if (pos > 0) pos -= halfWidth;
+    track.style.transform = 'translateX(' + pos + 'px)';
   });
-  wrapper.addEventListener('mouseup', function() {
-    if (!isDragging) return;
+  document.addEventListener('mouseup', function() {
     isDragging = false;
-    wrapper.classList.remove('dragging');
-    track.style.transform = '';
   });
-  wrapper.addEventListener('mouseleave', function() {
-    if (!isDragging) return;
-    isDragging = false;
-    wrapper.classList.remove('dragging');
-    track.style.transform = '';
-  });
-  /* Touch support */
+
+  /* Touch */
   wrapper.addEventListener('touchstart', function(e) {
     isDragging = true;
-    wrapper.classList.add('dragging');
     startX = e.touches[0].pageX;
-    var transform = getComputedStyle(track).transform;
-    var matrix = new DOMMatrix(transform);
-    scrollLeft = matrix.m41;
+    dragOffset = pos;
   }, {passive: true});
   wrapper.addEventListener('touchmove', function(e) {
     if (!isDragging) return;
-    var dx = e.touches[0].pageX - startX;
-    track.style.transform = 'translateX(' + (scrollLeft + dx) + 'px)';
+    pos = dragOffset + (e.touches[0].pageX - startX);
+    if (pos <= -halfWidth) pos += halfWidth;
+    if (pos > 0) pos -= halfWidth;
+    track.style.transform = 'translateX(' + pos + 'px)';
   }, {passive: true});
   wrapper.addEventListener('touchend', function() {
     isDragging = false;
-    wrapper.classList.remove('dragging');
-    track.style.transform = '';
   });
 });
 </script>
