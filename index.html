@@ -66,42 +66,12 @@
   </script>
 
   <!-- ============================================
-       MESURE D'AUDIENCE
-       1) Google Analytics 4 (ID public, pas un secret).
-          Les événements personnalisés (CV, projets, contact, sections vues)
-          sont envoyés par le script "analytics" en bas de page.
-       2) GoatCounter (optionnel) : compteur sans cookies, sans bannière de
-          consentement, beaucoup moins bloqué par les bloqueurs de pub.
-          Créer un compte sur https://www.goatcounter.com/signup puis mettre
-          le code du site dans SITE_ANALYTICS.goatcounter ci-dessous.
-       Détails : ANALYTICS.md
+       MESURE D'AUDIENCE : GA4 + GoatCounter (optionnel)
+       Toute la configuration et les événements sont dans
+       assets/analytics.js. Détails : ANALYTICS.md
        ============================================ -->
-  <script>
-    window.SITE_ANALYTICS = {
-      ga4: 'G-4B3WB26VP4',
-      goatcounter: ''   /* ex: 'ilyes-sadadou' -> tableau de bord sur https://ilyes-sadadou.goatcounter.com */
-    };
-  </script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4B3WB26VP4"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', window.SITE_ANALYTICS.ga4, {
-      /* Pas de Google Signals ni de pub personnalisée : mesure d'audience uniquement */
-      allow_google_signals: false,
-      allow_ad_personalization_signals: false
-    });
-    (function () {
-      var site = window.SITE_ANALYTICS.goatcounter;
-      if (!site) return;
-      window.goatcounter = { endpoint: 'https://' + site + '.goatcounter.com/count' };
-      var s = document.createElement('script');
-      s.async = true;
-      s.src = 'https://gc.zgo.at/count.js';
-      document.head.appendChild(s);
-    })();
-  </script>
+  <link rel="preconnect" href="https://www.googletagmanager.com">
+  <script src="assets/analytics.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -3049,93 +3019,6 @@ document.querySelectorAll('.marquee-wrapper').forEach(function(wrapper) {
     isDragging = false;
   });
 });
-</script>
-
-<!-- ============================================
-     ANALYTICS — événements personnalisés
-     Envoyés à GA4 (gtag) et, s'il est activé, à GoatCounter.
-     Événements : section_view, project_open, cv_download, cv_prank_open,
-     cv_prank_completed, contact_click, contact_form_submit,
-     recommendation_open, nav_click. Voir ANALYTICS.md.
-     ============================================ -->
-<script>
-(function () {
-  function track(name, params) {
-    params = params || {};
-    try {
-      if (typeof gtag === 'function') gtag('event', name, params);
-    } catch (e) {}
-    try {
-      if (window.goatcounter && typeof window.goatcounter.count === 'function') {
-        window.goatcounter.count({
-          path: 'event/' + name + (params.label ? '/' + params.label : ''),
-          title: name,
-          event: true
-        });
-      }
-    } catch (e) {}
-  }
-  window.trackEvent = track;
-
-  /* Sections vues (une seule fois par visite) : mesure jusqu'où les visiteurs descendent */
-  if ('IntersectionObserver' in window) {
-    var seen = {};
-    var sectionObserver = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        var id = entry.target.id;
-        if (entry.isIntersecting && !seen[id]) {
-          seen[id] = true;
-          track('section_view', { label: id, section: id });
-        }
-      });
-    }, { threshold: 0.25 });
-    document.querySelectorAll('section[id]').forEach(function (s) { sectionObserver.observe(s); });
-  }
-
-  /* Clics importants (délégation : fonctionne aussi pour les éléments ajoutés plus tard) */
-  document.addEventListener('click', function (e) {
-    var a = e.target.closest ? e.target.closest('a') : null;
-    if (!a) return;
-    var href = a.getAttribute('href') || '';
-    if (!href || href === '#') return;
-    var sectionEl = a.closest('section');
-    var section = sectionEl ? sectionEl.id : 'other';
-    var card = a.closest('.project-card');
-
-    if (/Ilyes-Sadadou-CV\.pdf/i.test(href)) {
-      track('cv_download', { label: 'cv_pdf', section: section });
-      return;
-    }
-    if (card) {
-      var title = card.querySelector('.project-title');
-      track('project_open', {
-        label: title ? title.textContent.trim().slice(0, 100) : href,
-        link_type: /\.pdf$/i.test(href) ? 'pdf' : (/^https?:/i.test(href) ? 'external' : 'page'),
-        link_url: href
-      });
-      return;
-    }
-    if (/recommandation/i.test(href)) {
-      track('recommendation_open', { label: href.split('/').pop(), section: section });
-      return;
-    }
-    if (href.indexOf('mailto:') === 0) {
-      track('contact_click', { label: 'email', section: section });
-      return;
-    }
-    if (/linkedin\.com/i.test(href)) {
-      track('contact_click', { label: 'linkedin', section: section });
-      return;
-    }
-    if (/github\.com/i.test(href)) {
-      track('contact_click', { label: 'github', section: section });
-      return;
-    }
-    if (href.charAt(0) === '#') {
-      track('nav_click', { label: href.slice(1), section: section });
-    }
-  }, true);
-})();
 </script>
 
 <div class="cv-prank-overlay" id="cv-prank" aria-hidden="true"></div>
